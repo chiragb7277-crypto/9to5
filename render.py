@@ -415,7 +415,7 @@ def render_reel(
     return str(out_p)
 
 
-def create_mp4(png_path: str, output_mp4_path: str, duration: int = 7) -> str:
+def create_mp4(png_path: str, output_mp4_path: str, duration: int = 12) -> str:
     """
     Generates a 7-second silent MP4 from the static PNG with ffmpeg.
     Command: ffmpeg -loop 1 -i in.png -t 7 -r 30 -c:v libx264 -pix_fmt yuv420p -an out.mp4

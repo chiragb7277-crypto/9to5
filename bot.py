@@ -149,8 +149,8 @@ def process_posts_file(posts_path: Path):
             # 1. Render PNG
             render_reel(item, str(png_path), str(ASSETS_DIR))
 
-            # 2. Render 7s silent MP4
-            create_mp4(str(png_path), str(mp4_path), duration=7)
+            # 2. Render 12s silent MP4
+            create_mp4(str(png_path), str(mp4_path), duration=12)
 
             # 3. Save Caption .txt file
             caption_text = str(item.get("caption", "")).strip()
@@ -224,7 +224,7 @@ def run_test():
     print(f"[ASSERT] Rendered PNG dimensions: {im.size}")
     assert im.size == (1080, 1920), f"Expected (1080, 1920), got {im.size}"
 
-    create_mp4(str(test_png), str(test_mp4), duration=7)
+    create_mp4(str(test_png), str(test_mp4), duration=12)
     assert test_mp4.exists() and test_mp4.stat().st_size > 0, "MP4 was not created"
 
     with open(test_txt, "w", encoding="utf-8") as f:
