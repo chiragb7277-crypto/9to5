@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  reel-bot:
+    build: .
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./output:/app/output

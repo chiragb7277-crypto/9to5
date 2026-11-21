@@ -1,0 +1,15 @@
+[Unit]
+Description=9to5 Reel Telegram Bot
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/9to5bot
+ExecStart=/opt/9to5bot/.venv/bin/python telegram_bot.py
+Restart=always
+RestartSec=5
+EnvironmentFile=/opt/9to5bot/.env
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,14 @@
+[
+  {
+    "setup": "Corporate Friday survival tip:",
+    "punchline": "If you can't solve it by noon, it's officially a Monday issue",
+    "highlight": "Monday issue",
+    "caption": "Tag your Friday escape partner 🏃‍♂️"
+  },
+  {
+    "setup": "Broken entry:",
+    "punchline": "This punchline does not contain the highlight keyword",
+    "highlight": "nonexistent keyword",
+    "caption": "Should be skipped"
+  }
+]
