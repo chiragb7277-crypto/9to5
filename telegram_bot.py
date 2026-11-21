@@ -57,23 +57,25 @@ def is_authorized(user_id: int) -> bool:
     return user_id in ALLOWED_USER_IDS
 
 
-def build_caption_from_line(setup: str, punchline: str) -> str:
-    """
-    Builds caption using the line itself, with a space before the hashtag #9to5Office.
-    No generic canned captions.
-    """
-    setup_clean = setup.strip() if setup else ""
-    punch_clean = punchline.strip() if punchline else ""
+import random
 
-    if setup_clean and punch_clean:
-        if setup_clean.endswith(":"):
-            full_line = f"{setup_clean} {punch_clean}"
-        else:
-            full_line = f"{setup_clean} - {punch_clean}"
-    else:
-        full_line = punch_clean or setup_clean
+WORK_CAPTIONS = [
+    "Corporate life 💼\n\n#work #officelife #corporatelife #workhumor #job",
+    "Every single day ☕\n\n#work #corporate #worklife #office #job",
+    "Too relatable 😭\n\n#officelife #workhumor #corporate #work #job",
+    "Office reality check 🚶‍♂️\n\n#work #corporate #worklife #office #job",
+    "Corporate survival mode 🥲\n\n#officelife #workhumor #corporate #work #job",
+    "Monday to Friday mood ☕\n\n#work #office #worklife #corporate #job",
+    "Relatable work moments 💼\n\n#worklife #corporate #office #workhumor #job",
+]
 
-    return f"{full_line} #9to5Office"
+
+def build_smart_caption() -> str:
+    """
+    Returns a short 2-3 word caption followed by spacing and work hashtags (no 9to5).
+    Does NOT repeat the joke copy.
+    """
+    return random.choice(WORK_CAPTIONS)
 
 
 def pick_smart_highlight(punchline: str) -> str:
@@ -169,9 +171,7 @@ def parse_text_to_items(text: str) -> Tuple[List[Dict[str, Any]], Optional[str]]
                 if "highlight" not in current_item and "punchline" in current_item:
                     current_item["highlight"] = pick_smart_highlight(current_item["punchline"])
                 if "caption" not in current_item:
-                    current_item["caption"] = build_caption_from_line(
-                        current_item.get("setup", ""), current_item.get("punchline", "")
-                    )
+                    current_item["caption"] = build_smart_caption()
                 items.append(current_item)
 
         if items:
@@ -220,8 +220,8 @@ def parse_text_to_items(text: str) -> Tuple[List[Dict[str, Any]], Optional[str]]
 
         highlight = pick_smart_highlight(punchline)
 
-        # Caption uses the line itself with a space before #9to5Office
-        caption = build_caption_from_line(setup, punchline)
+        # 2-3 word caption with spacing and work hashtags (no 9to5, no copy repeated)
+        caption = build_smart_caption()
 
         plain_items.append({
             "setup": setup,
@@ -323,15 +323,7 @@ async def render_and_send_items(
                 "data": item
             })
 
-            # Send PNG image
-            with open(png_path, "rb") as photo_file:
-                await update.message.reply_photo(
-                    photo=photo_file,
-                    caption=f"🖼️ *Reel Image ({slug})*",
-                    parse_mode=constants.ParseMode.MARKDOWN,
-                )
-
-            # Send MP4 video
+            # Send ONLY the one MP4 Reel video with the caption attached
             await context.bot.send_chat_action(
                 chat_id=update.effective_chat.id,
                 action=constants.ChatAction.UPLOAD_VIDEO,
@@ -343,14 +335,7 @@ async def render_and_send_items(
                     height=1920,
                     duration=12,
                     supports_streaming=True,
-                    caption="🎬 12-Second Silent Reel MP4",
-                )
-
-            # Send copyable caption if available
-            if caption_text:
-                await update.message.reply_text(
-                    f"📝 *Copyable Caption:*\n\n`{caption_text}`",
-                    parse_mode=constants.ParseMode.MARKDOWN,
+                    caption=caption_text,
                 )
 
         except Exception as e:
